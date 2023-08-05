@@ -19,31 +19,36 @@ class Email:
     subject_length = 0
     body_length = 0
     num_verbs = 0
+    classified = False
     
     def __init__(self, msg):
         self.importance = 0
         self.email_sender_length = len(msg.sender)
         self.time_sent = int(msg.date[msg.date.find(" "): msg.date.find(":")])
-        self.attachments = msg.attachments
+        self.attachments = len(msg.attachments)
         self.subject = msg.subject
         self.subject_length = len(msg.subject)
         if msg.plain:
             self.body_length = len(msg.plain)
-        self.num_verbs = 0
 
-# creating Email objects
+# grabbing all emails that fit these parameters
 query_params = {
     "newer_than": (1, "day"),
 }
 messages = gmail.get_messages(query=construct_query(query_params))
+# creating Email objects and adding to training data
 for msg in messages:
     training_data.append(Email(msg))
 
-for x in training_data:
-    print(x.subject)
-    print(x.body_length)
-    print(" ")
-
+# for x in training_data:
+#     print(x.importance)
+#     print(x.email_sender_length)
+#     print(x.time_sent)
+#     print(x.attachments)
+#     print(x.subject)
+#     print(x.subject_length)
+#     print(x.num_verbs)
+#     print(" ")
 
 # # writing data to file
 # with open("data\\email_data.txt", "a", encoding="utf-8") as doc:
@@ -51,5 +56,9 @@ for x in training_data:
 #         if msg.plain:
             
             
-            
+training_data_arr = numpy.array(training_data)            
 
+
+file = open("data\\training_data", "wb") # writing in binary
+numpy.save(file, training_data_arr)
+file.close()

@@ -1,5 +1,7 @@
 import numpy
 
-file = open("array", "rb")
-arr1 = numpy.load(file)
-print(arr1)
+training_data = ["hi", "yes"]
+
+file = open("data\\training_data", "wb") # writing in binary
+numpy.save(file, training_data)
+file.close
