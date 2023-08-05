@@ -9,12 +9,12 @@ all_emails = []
 
 # query parameters
 query_params = {
-    "newer_than": (5, "day"),
+    "newer_than": (10, "day"),
 }
 messages = gmail.get_messages(query=construct_query(query_params))
 
-# classes
 
+# classes
 class Email:
     def __init__(self, subject, date, plain):
         self.subject = subject
@@ -25,9 +25,10 @@ class Email:
 for email in messages:
     all_emails.append(Email(email.subject, email.date, email.plain))
 
+
 # writing data to file
 with open("data\\email_data.txt", "a", encoding="utf-8") as doc:
-    for msg in all_emails:
+    for msg in messages:
         if msg.plain:
             doc.write(msg.subject + "\n")
 
