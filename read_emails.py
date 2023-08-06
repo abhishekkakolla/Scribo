@@ -1,4 +1,5 @@
 from simplegmail import Gmail
+from email_class import Email
 from simplegmail.query import construct_query
 import numpy
 
@@ -8,28 +9,6 @@ gmail = Gmail()
 # variables
 training_data = []
 
-
-# classes
-class Email:
-    importance = 0
-    email_sender_length = 0
-    time_sent = 0
-    attachments = 0
-    subject = ""
-    subject_length = 0
-    body_length = 0
-    num_verbs = 0
-    classified = False
-    
-    def __init__(self, msg):
-        self.importance = 0
-        self.email_sender_length = len(msg.sender)
-        self.time_sent = int(msg.date[msg.date.find(" "): msg.date.find(":")])
-        self.attachments = len(msg.attachments)
-        self.subject = msg.subject
-        self.subject_length = len(msg.subject)
-        if msg.plain:
-            self.body_length = len(msg.plain)
 
 # grabbing all emails that fit these parameters
 query_params = {
@@ -59,6 +38,6 @@ for msg in messages:
 training_data_arr = numpy.array(training_data)            
 
 
-file = open("data\\training_data", "wb") # writing in binary
+file = open("data\\training_data.npy", "wb") # writing in binary
 numpy.save(file, training_data_arr)
 file.close()
