@@ -19,15 +19,15 @@ messages = gmail.get_messages(query=construct_query(query_params))
 for msg in messages:
     training_data.append(Email(msg))
 
-# for x in training_data:
-#     print(x.importance)
-#     print(x.email_sender_length)
-#     print(x.time_sent)
-#     print(x.attachments)
-#     print(x.subject)
-#     print(x.subject_length)
-#     print(x.num_verbs)
-#     print(" ")
+for x in training_data:
+    print(x.importance)
+    print(x.email_sender_length)
+    print(x.time_sent)
+    print(x.attachments)
+    print(x.subject)
+    print(x.subject_length)
+    print(x.num_verbs)
+    print(" ")
 
 # # writing data to file
 # with open("data\\email_data.txt", "a", encoding="utf-8") as doc:
