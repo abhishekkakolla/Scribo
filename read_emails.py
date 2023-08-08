@@ -1,3 +1,6 @@
+# This file reads recent emails into an array and writes the array into the training_data.npy file.
+# 
+
 from simplegmail import Gmail
 from email_class import Email
 from simplegmail.query import construct_query

@@ -1,3 +1,5 @@
+# This is the email class file that includes all of the properties measured in the algorithm.
+
 import spacy
 
 # Load English tokenizer, tagger, parser and NER

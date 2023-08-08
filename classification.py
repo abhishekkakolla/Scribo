@@ -1,3 +1,6 @@
+# This file is run in the terminal to classify emails during training. Not be run often.
+# Reads the training data array from the training_data.npy file.
+
 from email_class import Email
 import numpy as np
 
