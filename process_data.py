@@ -2,6 +2,24 @@
 # in the classification algorithm.
 
 import numpy as np
+def process_list(main_list, properties_list):
+        main_list[0][0] = np.mean(properties_list[0])
+        main_list[1][0] = np.std(properties_list[0])
+
+        main_list[0][1] = np.mean(properties_list[1])
+        main_list[1][1] = np.std(properties_list[1])
+
+        main_list[0][2] = np.mean(properties_list[2])
+        main_list[1][2] = np.std(properties_list[2])
+
+        main_list[0][3] = np.mean(properties_list[3])
+        main_list[1][3] = np.std(properties_list[3])
+
+        main_list[0][4] = np.mean(properties_list[4])
+        main_list[1][4] = np.std(properties_list[4])
+
+        main_list[0][5] = np.mean(properties_list[5])
+        main_list[1][5] = np.std(properties_list[5])
 
 def process_training_data():
 
@@ -24,24 +42,7 @@ def process_training_data():
     i_all_lists = [i_sender_email_length_list, i_time_sent_list, i_attachments_list, i_subject_length_list, i_length_list, i_num_verbs_list]
 
 
-    def process_list(main_list, properties_list):
-        main_list[0][0] = np.mean(properties_list[0])
-        main_list[1][0] = np.std(properties_list[0])
-
-        main_list[0][1] = np.mean(properties_list[1])
-        main_list[1][1] = np.std(properties_list[1])
-
-        main_list[0][2] = np.mean(properties_list[2])
-        main_list[1][2] = np.std(properties_list[2])
-
-        main_list[0][3] = np.mean(properties_list[3])
-        main_list[1][3] = np.std(properties_list[3])
-
-        main_list[0][4] = np.mean(properties_list[4])
-        main_list[1][4] = np.std(properties_list[4])
-
-        main_list[0][5] = np.mean(properties_list[5])
-        main_list[1][5] = np.std(properties_list[5])
+    
 
 
 
@@ -95,18 +96,29 @@ def process_training_data():
     important_properties = [[0 for i in range(6)] for x in range(2)] # 2 x 6 list
     process_list(important_properties, i_all_lists)
 
+    # writing array to file
+    file2 = open("data\\important_data_array.npy", "wb")
+    np.save(file2, important_properties)
+    file2.close()
+
+     # writing array to file
+    file3 = open("data\\unimportant_data_array.npy", "wb")
+    np.save(file3, unimportant_properties)
+    file3.close()
 
 
-    # # test prints
-    # print("unimportant")
-    # for row in range (0, 2):
-    #     for column in range (0, 6):
-    #         print(unimportant_properties[row][column], end=" ")
-    #     print(" ")
 
-    # print("important")
-    # for row in range (0, 2):
-    #     for column in range (0, 6):
-    #         print(important_properties[row][column], end=" ")
-    #     print(" ")
+    # test prints
+    print("unimportant")
+    for row in range (0, 2):
+        for column in range (0, 6):
+            print(unimportant_properties[row][column], end=" ")
+        print(" ")
 
+    print("important")
+    for row in range (0, 2):
+        for column in range (0, 6):
+            print(important_properties[row][column], end=" ")
+        print(" ")
+
+process_training_data()

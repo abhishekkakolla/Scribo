@@ -11,6 +11,7 @@ class Email:
     sender = ""
     subject = ""
     classified = False
+    body = ""
 
 
     email_sender_length = 0
@@ -30,6 +31,7 @@ class Email:
         self.attachments = len(msg.attachments)
         self.subject = msg.subject
         self.subject_length = len(msg.subject)
+        self.body = msg.plain
         if msg.plain:
             self.body_length = len(msg.plain)
 
