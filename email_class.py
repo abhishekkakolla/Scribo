@@ -7,7 +7,7 @@ nlp = spacy.load("en_core_web_sm")
 
 
 class Email:
-    importance = 0
+    importance = ""
     sender = ""
     subject = ""
     classified = False

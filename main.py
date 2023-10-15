@@ -22,6 +22,7 @@ root.title("scribo")
 root.resizable(False, False)
 
 currently_open = []
+currently_hidden = []
 
 class EmailUI:
     summary = ""
@@ -30,21 +31,31 @@ class EmailUI:
     def get_summary():
         pass
 
-    def __init__(self, master, email_text, email_obj, row_index, importance):
-        master.label = ctk.CTkButton(master=master, text= email_text, command= lambda: display_email(email_obj), width=550, height=20)
-        master.label.grid(row=row_index, column=0, padx=0)
+    def __init__(self, master, email_text, email_obj, row_index):
+        master.label = ctk.CTkButton(master=master, text= email_text, command= lambda: display_email(email_obj), width=550, height=40, fg_color='#5A5A5A', hover_color='green')
+        master.label.grid(row=row_index, column=0, padx=0, pady=5)
+        
 
 def display_email(email):
-    
-    n = ctk.CTkLabel(master=frame, text=email.plain, font=('Verdana', 7))
-    print(email.plain)
-    n.pack()
     for x in currently_open:
-        x.destroy()
+        x.place_forget()
+        currently_open.remove(x)
+        currently_hidden.append(x)
+
+    body_frame = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
+    body_frame.pack()
+    body_frame.place(relx=0.27, rely=0.1)
+    
+    n = ctk.CTkLabel(master=body_frame, text=email.body, font=('Calibri', 15), wraplength=550)
+    print("showing email body")
+    n.pack()
+
+    
+    currently_open.append(body_frame)
 
 
-def classify_email(email):
-    pass
+
+
 
 def show_emails(msgs):
     print("opened email")
@@ -53,19 +64,37 @@ def show_emails(msgs):
     email_scroll.pack()
     email_scroll.place(relx=0.27, rely=0.1)
     currently_open.append(email_scroll)
-
+    
     count = 0
     for i in range(0, 20 * len(msgs), 20):
-        t = get_score(Email(msgs[count]))
+        email_obj = Email(msgs[count])
+        t = get_score(email_obj)
+        email_obj.importance = t
         text = msgs[count].subject
         if len(text) > 65:
             t += text[0:65] + "..."
         else:
             t += text
-        EmailUI(email_scroll, t, msgs[count], i, 1)
-        if count <= len(msgs) - 2:
-            count += 1
+        EmailUI(email_scroll, t, email_obj, i)
+        count += 1
+        # if count <= len(msgs) - 2:
+        #     count += 1
+    print("printed emails")
 
+def reopen_emails():
+
+    # close the currently open email
+    print("currently open: ")
+    print(currently_open)
+    for x in currently_open:
+        x.place_forget()
+        currently_open.remove(x)
+
+    # reopen the email list
+    for x in currently_hidden:
+        x.pack()
+        x.place(relx=0.27, rely=0.1)
+        currently_hidden.remove(x)
 
 
 
@@ -90,6 +119,11 @@ label.place(relx=0.05, rely=0.1)
 button = ctk.CTkButton(master=frame, text="Open", command= lambda: show_emails(messages))
 button.pack(pady=12, padx=10)
 button.place(relx=0.05, rely=0.2)
+
+backbtn = ctk.CTkButton(master=frame, text="Back", command= lambda: reopen_emails())
+backbtn.pack(pady=12, padx=10)
+backbtn.place(relx=0.05, rely=0.3)
+
 
 
 
