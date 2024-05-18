@@ -6,6 +6,10 @@ import scipy
 from scipy.stats import norm
 import matplotlib.pyplot as plt
 
+#ignore NaN warnings
+np.seterr(divide='ignore', invalid='ignore')
+
+
 mean = 0
 std = 1
 
@@ -47,9 +51,12 @@ def get_score(email_obj):
         if math.isnan(l): #check if the number is NaN
             continue
             # l = 0.000000000000001
+        # print(l)
         l = math.log(l)
         # print("value is " + str(properties[col]) + ", avg is " + str(important_data_array[0][col]) + "std is " + str(important_data_array[1][col]) + "ans with log is " + str(l))
         score += l
+
+
 
     # getting score for unimportant properties
 
@@ -60,9 +67,10 @@ def get_score(email_obj):
     for col in range(0, 6):
         l = norm.pdf(properties[col], loc=unimportant_data_array[0][col], scale=unimportant_data_array[1][col])
         # print("norm dist value: " + str(l))
-        if math.isnan(l): #check if the number is NaN
+        if math.isnan(l): #check if the number is NaN, aka very very small
             continue
             # l = 0.000000000000001
+        # print(l)
         l = math.log(l)
         # print("value is " + str(properties[col]) + ", avg is " + str(unimportant_data_array[0][col]) + "std is " + str(unimportant_data_array[1][col]) + "ans with log is " + str(l))
         u_score += l

@@ -1,5 +1,6 @@
 # This file stores the means and standard deviations of the email data that are to be used
 # in the classification algorithm.
+# Should be run after classification.py
 
 import numpy as np
 def process_list(main_list, properties_list):

@@ -15,7 +15,7 @@ training_data = []
 
 # grabbing all emails that fit these parameters
 query_params = {
-    "newer_than": (1, "day"),
+    "newer_than": (3, "day"),
 }
 messages = gmail.get_messages(query=construct_query(query_params))
 # creating Email objects and adding to training data
@@ -23,13 +23,13 @@ for msg in messages:
     training_data.append(Email(msg))
 
 for x in training_data:
-    print(x.importance)
-    print(x.email_sender_length)
-    print(x.time_sent)
-    print(x.attachments)
-    print(x.subject)
-    print(x.subject_length)
-    print(x.num_verbs)
+    print("importance: "  + str(x.importance))
+    print("email-sender-len: " + str(x.email_sender_length))
+    print("time-sent: " + str(x.time_sent))
+    print("time sent: " + str(x.attachments))
+    print("subject: " + str(x.subject))
+    print("subject-len: " + str(x.subject_length))
+    print("num-verbs: " + str(x.num_verbs))
     print(" ")
 
 # # writing data to file

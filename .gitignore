@@ -1,3 +1,4 @@
 #Ignore API and tokens
 client_secret.json
 gmail_token.json
+/data/

@@ -1,5 +1,7 @@
 # UI file
 
+print("importing libraries")
+
 from simplegmail import Gmail
 from gaussian import get_score
 from email_class import Email
@@ -8,9 +10,11 @@ import customtkinter as ctk
 from tkinter.constants import*
 
 
+
 #initialization
 gmail = Gmail()
 
+print("initializing UI")
 
 # UI
 ctk.set_appearance_mode("dark")
@@ -32,11 +36,12 @@ class EmailUI:
         pass
 
     def __init__(self, master, email_text, email_obj, row_index):
-        master.label = ctk.CTkButton(master=master, text= email_text, command= lambda: display_email(email_obj), width=550, height=40, fg_color='#5A5A5A', hover_color='green')
+        master.label = ctk.CTkButton(master=master, text= email_text, command= lambda: display_email(email_obj), width=550, height=40, fg_color='#5A5A5A', hover_color='#2FA572')
         master.label.grid(row=row_index, column=0, padx=0, pady=5)
         
 
 def display_email(email):
+    print("displaying clicked email")
     for x in currently_open:
         x.place_forget()
         currently_open.remove(x)
@@ -46,8 +51,10 @@ def display_email(email):
     body_frame.pack()
     body_frame.place(relx=0.27, rely=0.1)
     
-    n = ctk.CTkLabel(master=body_frame, text=email.body, font=('Calibri', 15), wraplength=550)
+    title_frame = ctk.CTkLabel(master=body_frame, text=email.subject, font=('Calibri', 25), wraplength=550)
+    n = ctk.CTkLabel(master=body_frame, text=email.body, font=('Calibri', 16), wraplength=550)
     print("showing email body")
+    title_frame.pack()
     n.pack()
 
     
@@ -58,7 +65,7 @@ def display_email(email):
 
 
 def show_emails(msgs):
-    print("opened email")
+    print("showing email list")
     
     email_scroll = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
     email_scroll.pack()
@@ -75,16 +82,16 @@ def show_emails(msgs):
             t += text[0:65] + "..."
         else:
             t += text
-        EmailUI(email_scroll, t, email_obj, i)
+        EmailUI(email_scroll, t, email_obj, i) # UI: parent, t = importance, object, i = position
         count += 1
         # if count <= len(msgs) - 2:
         #     count += 1
-    print("printed emails")
+    print("printed email list")
 
 def reopen_emails():
 
     # close the currently open email
-    print("currently open: ")
+    print("reopening email list")
     print(currently_open)
     for x in currently_open:
         x.place_forget()
@@ -100,9 +107,10 @@ def reopen_emails():
 
 # grabbing recent unread emails to display
 query_params = {
-    "newer_than": (14, "day"),
+    "newer_than": (1, "day"),
     "unread": True,
 }
+print("getting emails from gmail API")
 messages = gmail.get_messages(query=construct_query(query_params))
 
 
