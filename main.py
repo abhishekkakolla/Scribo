@@ -2,6 +2,7 @@
 
 print("importing libraries")
 
+import time
 from simplegmail import Gmail
 from gaussian import get_score
 from email_class import Email
@@ -9,12 +10,15 @@ from simplegmail.query import construct_query
 import customtkinter as ctk
 from tkinter.constants import*
 
+from gemini import display_ai_summary
 
 
-#initialization
+
+# initialization
 gmail = Gmail()
 
 print("initializing UI")
+
 
 # UI
 ctk.set_appearance_mode("dark")
@@ -28,9 +32,20 @@ root.resizable(False, False)
 currently_open = []
 currently_hidden = []
 
+
+# components
+# create them initially so it doesn't have to recreate all the time (which is slower)
+frame = ctk.CTkFrame(master=root)
+email_scroll = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
+email_text_frame = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
+
+title_frame = ctk.CTkLabel(master=email_text_frame, text="Dummy text", font=('Calibri', 25), wraplength=550)
+n = ctk.CTkLabel(master=email_text_frame, text="", font=('Calibri', 16), wraplength=550) # email body
+sender_frame = ctk.CTkLabel(master=email_text_frame, text="Dummy text", font=('Calibri', 18, "italic"), wraplength=550) 
+
 class EmailUI:
     summary = ""
-
+    
 
     def get_summary():
         pass
@@ -42,24 +57,43 @@ class EmailUI:
 
 def display_email(email):
     print("displaying clicked email")
+
+    # close currently opened components
     for x in currently_open:
         x.place_forget()
         currently_open.remove(x)
         currently_hidden.append(x)
 
-    body_frame = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
-    body_frame.pack()
-    body_frame.place(relx=0.27, rely=0.1)
+
+    # entire scrollable frame
+    email_text_frame.pack()
+    email_text_frame.place(relx=0.27, rely=0.1)
     
-    title_frame = ctk.CTkLabel(master=body_frame, text=email.subject, font=('Calibri', 25), wraplength=550)
-    n = ctk.CTkLabel(master=body_frame, text=email.body, font=('Calibri', 16), wraplength=550)
-    print("showing email body")
+    # title frame & body frame
+    # title_frame = ctk.CTkLabel(master=body_frame, text=email.subject, font=('Calibri', 25), wraplength=550)
+    # n = ctk.CTkLabel(master=body_frame, text="", font=('Calibri', 16), wraplength=550)
+    
+    
     title_frame.pack()
+    title_frame.configure(text=email.subject)
+    title_frame.update_idletasks()
+    
+    sender_frame.pack()
+    sender_frame.configure(text=email.sender)
+    sender_frame.update_idletasks()
+    
+    # Gemini AI's response which is streamed
     n.pack()
+    n.update_idletasks()
 
     
-    currently_open.append(body_frame)
+    root.after(10, lambda : display_ai_summary(email, n))
+    # display_ai_summary(email, n)
 
+   
+    
+    currently_open.append(email_text_frame)
+    
 
 
 
@@ -67,7 +101,6 @@ def display_email(email):
 def show_emails(msgs):
     print("showing email list")
     
-    email_scroll = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
     email_scroll.pack()
     email_scroll.place(relx=0.27, rely=0.1)
     currently_open.append(email_scroll)
@@ -86,17 +119,27 @@ def show_emails(msgs):
         count += 1
         # if count <= len(msgs) - 2:
         #     count += 1
+
+        
     print("printed email list")
 
 def reopen_emails():
 
     # close the currently open email
+    n.configure(text="")
+
     print("reopening email list")
-    print(currently_open)
+    
+    for l in currently_open:
+        print(l)
+
+    print('closing')
     for x in currently_open:
         x.place_forget()
         currently_open.remove(x)
 
+    for l in currently_open:
+        print(l)
     # reopen the email list
     for x in currently_hidden:
         x.pack()
@@ -117,7 +160,6 @@ messages = gmail.get_messages(query=construct_query(query_params))
 
 
 
-frame = ctk.CTkFrame(master=root)
 frame.pack(fill="both", expand=True)
 
 label = ctk.CTkLabel(master=frame, text="Demo version", font=('Verdana', 20))

@@ -43,3 +43,5 @@ class Email:
                 if len(i) < 12:
                     filtered_verbs.append(i)
             self.num_verbs = len(filtered_verbs) 
+        else:
+            self.body = ""
