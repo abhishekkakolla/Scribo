@@ -8,6 +8,8 @@ import time
 import google.generativeai as genai
 import customtkinter as ctk
 
+import threading
+
 
 filename = "data\\gemini_api.config"
 contents = open(filename).read()

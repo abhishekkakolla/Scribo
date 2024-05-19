@@ -12,6 +12,7 @@ class Email:
     subject = ""
     classified = False
     body = ""
+    id = ""
 
 
     email_sender_length = 0
@@ -32,6 +33,7 @@ class Email:
         self.subject = msg.subject
         self.subject_length = len(msg.subject)
         self.body = msg.plain
+        self.id = msg.id
         if msg.plain:
             self.body_length = len(msg.plain)
 

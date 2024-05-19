@@ -21,7 +21,7 @@ print("initializing UI")
 
 
 # UI
-ctk.set_appearance_mode("dark")
+ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("green")
 
 root = ctk.CTk()
@@ -39,7 +39,7 @@ frame = ctk.CTkFrame(master=root)
 email_scroll = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
 email_text_frame = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
 
-title_frame = ctk.CTkLabel(master=email_text_frame, text="Dummy text", font=('Calibri', 25), wraplength=550)
+title_frame = ctk.CTkLabel(master=email_text_frame, text="Dummy text", font=('Calibri', 25, 'bold'), wraplength=550)
 n = ctk.CTkLabel(master=email_text_frame, text="", font=('Calibri', 16), wraplength=550) # email body
 sender_frame = ctk.CTkLabel(master=email_text_frame, text="Dummy text", font=('Calibri', 18, "italic"), wraplength=550) 
 
@@ -55,6 +55,14 @@ class EmailUI:
         master.label.grid(row=row_index, column=0, padx=0, pady=5)
         
 
+def view_email_browser(email):
+    print("viewing in browser")
+    message_id = email.id
+    email_url = f"https://mail.google.com/mail/u/0/#inbox/{message_id}"
+    import webbrowser
+    webbrowser.open(email_url)
+
+
 def display_email(email):
     print("displaying clicked email")
 
@@ -68,6 +76,13 @@ def display_email(email):
     # entire scrollable frame
     email_text_frame.pack()
     email_text_frame.place(relx=0.27, rely=0.1)
+
+
+    # display the view button -> allows user to view entire email in browser
+    viewbtn.pack()
+    viewbtn.pack(pady=12, padx=10)
+    viewbtn.place(relx=0.05, rely=0.4)
+    viewbtn.configure(command= lambda : view_email_browser(email))
     
     # title frame & body frame
     # title_frame = ctk.CTkLabel(master=body_frame, text=email.subject, font=('Calibri', 25), wraplength=550)
@@ -85,7 +100,6 @@ def display_email(email):
     # Gemini AI's response which is streamed
     n.pack()
     n.update_idletasks()
-
     
     root.after(10, lambda : display_ai_summary(email, n))
     # display_ai_summary(email, n)
@@ -125,21 +139,20 @@ def show_emails(msgs):
 
 def reopen_emails():
 
-    # close the currently open email
+    # close the currently open email by resetting body to empty text
+    # also remove the view button
     n.configure(text="")
+    viewbtn.place_forget()
 
     print("reopening email list")
     
-    for l in currently_open:
-        print(l)
 
     print('closing')
     for x in currently_open:
         x.place_forget()
         currently_open.remove(x)
 
-    for l in currently_open:
-        print(l)
+
     # reopen the email list
     for x in currently_hidden:
         x.pack()
@@ -173,6 +186,8 @@ button.place(relx=0.05, rely=0.2)
 backbtn = ctk.CTkButton(master=frame, text="Back", command= lambda: reopen_emails())
 backbtn.pack(pady=12, padx=10)
 backbtn.place(relx=0.05, rely=0.3)
+
+viewbtn = ctk.CTkButton(master=frame, text="View")
 
 
 
