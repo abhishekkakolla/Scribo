@@ -21,7 +21,7 @@ class Email:
     subject_length = 0
     body_length = 0
     num_verbs = 0
-
+    
     
     
     def __init__(self, msg):
@@ -34,6 +34,7 @@ class Email:
         self.subject_length = len(msg.subject)
         self.body = msg.plain
         self.id = msg.id
+        self.mark_read_function = msg.mark_as_read
         if msg.plain:
             self.body_length = len(msg.plain)
 
@@ -47,3 +48,5 @@ class Email:
             self.num_verbs = len(filtered_verbs) 
         else:
             self.body = ""
+
+        

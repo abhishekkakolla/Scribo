@@ -11,6 +11,7 @@ import customtkinter as ctk
 import threading
 
 
+
 filename = "data\\gemini_api.config"
 contents = open(filename).read()
 config = eval(contents)
@@ -50,7 +51,7 @@ model = genai.GenerativeModel(model_name="gemini-1.5-flash-latest",
                               safety_settings=safety_settings)
 
 prompt_parts = [
-  "input: The subject, then the body contents of an email, which may include irrelevant information such as links and footer notes.",
+  "input: The subject, then the body contents of an email, which may include irrelevant information such as links and footer notes. Also ignore anything about unsubscribing to messages.",
   "output: The first line should be a one sentence summary of the whole email. In bullet points on the next few lines, output the most important summarized points and omit irrelevant information (which means don't include long links). Only output this format for the given input, never on past data.",
   "input: Subject: Your transaction history for April 2024 is now available.\nBody: View history on Venmo.comVenmo sends this notification periodically to help you stay on top of your account activity.As required by law, we are providing you with this notification of your transaction history. Learn more.Venmo is a service of PayPal, Inc., a licensed provider of money transfer services. All money transmission is provided by PayPal, Inc. pursuant to PayPal, Inc.’s licenses.PayPal is located at 2211 North First Street, San Jose, CA 95131Please do not reply directly to this email as you will not receive a response. For assistance, please visit our Help Center.",
   "output: This email informs you that your Venmo transaction history for April 2024 is now available.\n\n- Your transaction history for April 2024 is available on Venmo.com.\n- Venmo sends this notification periodically to help you stay on top of your account activity.\n- For assistance, please visit the Venmo Help Center.",
@@ -66,7 +67,7 @@ prompt_parts = [
   # "output: ",
 ]
 
-def display_ai_summary(email, ctk_label):
+def display_ai_summary(email, ctk_label, viewbtn):
   print("Subj: " + email.subject)
 
   total_input = 'input: Subject: ' + email.subject + '\nBody: ' + email.body
@@ -75,16 +76,34 @@ def display_ai_summary(email, ctk_label):
   response = model.generate_content(prompt_parts, stream=True)
   all_text = ""
   for chunk in response:
-    print(chunk.text)
-    time.sleep(0.1)
+    print(all_text)
     
     all_text += chunk.text
     ctk_label.configure(text=all_text)
     ctk_label.update_idletasks()
     # frame = ctk.CTkLabel(master=body_frame, text=email.body, font=('Calibri', 16), wraplength=550)
   prompt_parts.append("output: " + response.text)
+  show_viewbtn(email, viewbtn)
 
 
+
+  # display the view button -> allows user to view entire email in browser
+
+
+
+def show_viewbtn(email, viewbtn):
+  viewbtn.pack()
+  viewbtn.pack(pady=12, padx=10)
+  # viewbtn.place(relx=0.05, rely=0.4)
+  viewbtn.configure(command= lambda : view_email_browser(email))
+
+
+def view_email_browser(email):
+  print("viewing in browser")
+  message_id = email.id
+  email_url = f"https://mail.google.com/mail/u/0/#inbox/{message_id}"
+  import webbrowser
+  webbrowser.open(email_url)
 
 # print('enter subject: ')
 # str = input()

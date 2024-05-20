@@ -10,7 +10,7 @@ from simplegmail.query import construct_query
 import customtkinter as ctk
 from tkinter.constants import*
 
-from gemini import display_ai_summary
+from gemini import display_ai_summary, show_viewbtn
 
 
 
@@ -39,9 +39,12 @@ frame = ctk.CTkFrame(master=root)
 email_scroll = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
 email_text_frame = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
 
-title_frame = ctk.CTkLabel(master=email_text_frame, text="Dummy text", font=('Calibri', 25, 'bold'), wraplength=550)
-n = ctk.CTkLabel(master=email_text_frame, text="", font=('Calibri', 16), wraplength=550) # email body
-sender_frame = ctk.CTkLabel(master=email_text_frame, text="Dummy text", font=('Calibri', 18, "italic"), wraplength=550) 
+title_frame = ctk.CTkLabel(master=email_text_frame, text="Dummy text", font=('Calibri', 25, 'bold'), wraplength=550, pady=5)
+n = ctk.CTkLabel(master=email_text_frame, text="", font=('Calibri', 16), wraplength=550, pady=10) # email body
+sender_frame = ctk.CTkLabel(master=email_text_frame, text="Dummy text", font=('Calibri', 18, "italic"), wraplength=550)
+
+viewbtn = ctk.CTkButton(master=email_text_frame, text="View")
+# currently_open.append(viewbtn)
 
 class EmailUI:
     summary = ""
@@ -51,23 +54,37 @@ class EmailUI:
         pass
 
     def __init__(self, master, email_text, email_obj, row_index):
-        master.label = ctk.CTkButton(master=master, text= email_text, command= lambda: display_email(email_obj), width=550, height=40, fg_color='#5A5A5A', hover_color='#2FA572')
+        # frame to house preview button + mark read button
+        previewframe = ctk.CTkFrame(master=master, width=550, height=40)
+        master.label = previewframe
+
+        # preview email button
+        previewframe.label = ctk.CTkButton(master=previewframe, text= email_text, command= lambda: display_email(email_obj), width=500, height=30, fg_color='#5A5A5A', hover_color='#2FA572')
+        previewframe.label.grid(row=row_index, column=0, padx=5, pady=0)
+
+        # mark as read button
+        read_button = ctk.CTkButton(master=previewframe, text="✔️", command= lambda : mark_read(email_obj, read_button), width=15, height=30)
+        previewframe.read_button = read_button
+        previewframe.read_button.grid(row=row_index, column=1, padx=5, pady=0)
         master.label.grid(row=row_index, column=0, padx=0, pady=5)
         
 
-def view_email_browser(email):
-    print("viewing in browser")
-    message_id = email.id
-    email_url = f"https://mail.google.com/mail/u/0/#inbox/{message_id}"
-    import webbrowser
-    webbrowser.open(email_url)
+def mark_read(email_obj, button):
+    print("marking as read: " + str (email_obj.subject))
+    email_obj.mark_read_function()
+    button.configure(fg_color="grey", state="disabled")
+
+
 
 
 def display_email(email):
+    print("currently open: ")
+    print(currently_open)
     print("displaying clicked email")
 
     # close currently opened components
     for x in currently_open:
+        print("closing " + str(x))
         x.place_forget()
         currently_open.remove(x)
         currently_hidden.append(x)
@@ -77,16 +94,6 @@ def display_email(email):
     email_text_frame.pack()
     email_text_frame.place(relx=0.27, rely=0.1)
 
-
-    # display the view button -> allows user to view entire email in browser
-    viewbtn.pack()
-    viewbtn.pack(pady=12, padx=10)
-    viewbtn.place(relx=0.05, rely=0.4)
-    viewbtn.configure(command= lambda : view_email_browser(email))
-    
-    # title frame & body frame
-    # title_frame = ctk.CTkLabel(master=body_frame, text=email.subject, font=('Calibri', 25), wraplength=550)
-    # n = ctk.CTkLabel(master=body_frame, text="", font=('Calibri', 16), wraplength=550)
     
     
     title_frame.pack()
@@ -101,12 +108,19 @@ def display_email(email):
     n.pack()
     n.update_idletasks()
     
-    root.after(10, lambda : display_ai_summary(email, n))
+    root.after(10, lambda : display_ai_summary(email, n, viewbtn))
     # display_ai_summary(email, n)
+
+    # # display the view button -> allows user to view entire email in browser
+    # viewbtn.pack()
+    # viewbtn.pack(pady=12, padx=10)
+    # viewbtn.place(relx=0.05, rely=0.4)
+    # viewbtn.configure(command= lambda : view_email_browser(email))
 
    
     
     currently_open.append(email_text_frame)
+    currently_open.append(viewbtn)
     
 
 
@@ -119,7 +133,7 @@ def show_emails(msgs):
     email_scroll.place(relx=0.27, rely=0.1)
     currently_open.append(email_scroll)
     
-    count = 0
+    count = 0 # index in the all messages list
     for i in range(0, 20 * len(msgs), 20):
         email_obj = Email(msgs[count])
         t = get_score(email_obj)
@@ -142,15 +156,19 @@ def reopen_emails():
     # close the currently open email by resetting body to empty text
     # also remove the view button
     n.configure(text="")
-    viewbtn.place_forget()
+    root.update_idletasks()
 
     print("reopening email list")
+    print(currently_open)
     
 
     print('closing')
     for x in currently_open:
+        print("closing" + str(x))
         x.place_forget()
         currently_open.remove(x)
+    print(len(currently_open))
+    print(currently_open)
 
 
     # reopen the email list
@@ -187,7 +205,7 @@ backbtn = ctk.CTkButton(master=frame, text="Back", command= lambda: reopen_email
 backbtn.pack(pady=12, padx=10)
 backbtn.place(relx=0.05, rely=0.3)
 
-viewbtn = ctk.CTkButton(master=frame, text="View")
+
 
 
 
