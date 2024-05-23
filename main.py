@@ -10,7 +10,7 @@ from simplegmail.query import construct_query
 import customtkinter as ctk
 from tkinter.constants import*
 
-from gemini import display_ai_summary, show_viewbtn
+from gemini import display_ai_summary
 
 
 
@@ -44,7 +44,11 @@ n = ctk.CTkLabel(master=email_text_frame, text="", font=('Calibri', 16), wraplen
 sender_frame = ctk.CTkLabel(master=email_text_frame, text="Dummy text", font=('Calibri', 18, "italic"), wraplength=550)
 
 viewbtn = ctk.CTkButton(master=email_text_frame, text="View")
-# currently_open.append(viewbtn)
+todobtn = ctk.CTkButton(master=email_text_frame, text="Generate To-Do")
+
+todo_frame = ctk.CTkTextbox(master=n, width=300, height=200)
+
+
 
 class EmailUI:
     summary = ""
@@ -78,17 +82,24 @@ def mark_read(email_obj, button):
 
 
 def display_email(email):
-    print("currently open: ")
-    print(currently_open)
-    print("displaying clicked email")
+    
+
+    print("DISPLAY_EMAIL()")
 
     # close currently opened components
+    
+    print("-----Showing what is open: ")
+    count = 0
     for x in currently_open:
-        print("closing " + str(x))
+        print(str(count) + ": " + str(x))
+        
         x.place_forget()
+        x.update_idletasks()
         currently_open.remove(x)
         currently_hidden.append(x)
 
+    
+    
 
     # entire scrollable frame
     email_text_frame.pack()
@@ -108,19 +119,24 @@ def display_email(email):
     n.pack()
     n.update_idletasks()
     
-    root.after(10, lambda : display_ai_summary(email, n, viewbtn))
-    # display_ai_summary(email, n)
+    root.after(1000, lambda : display_ai_summary(email, n, viewbtn, todobtn, todo_frame, currently_open, email_text_frame))
 
-    # # display the view button -> allows user to view entire email in browser
-    # viewbtn.pack()
-    # viewbtn.pack(pady=12, padx=10)
-    # viewbtn.place(relx=0.05, rely=0.4)
-    # viewbtn.configure(command= lambda : view_email_browser(email))
+    currently_open.append(email_text_frame)
+    # currently_open.append(viewbtn)
+    # currently_open.append(todobtn)
 
    
+   
     
-    currently_open.append(email_text_frame)
-    currently_open.append(viewbtn)
+    # currently_open.append(email_text_frame)
+
+    # print("-----Showing what is open now: ")
+    # count = 0
+    # for x in currently_open:
+    #     print(str(count) + ": " + str(x))
+
+    
+        
     
 
 
@@ -128,54 +144,71 @@ def display_email(email):
 
 def show_emails(msgs):
     print("showing email list")
-    
-    email_scroll.pack()
-    email_scroll.place(relx=0.27, rely=0.1)
-    currently_open.append(email_scroll)
-    
-    count = 0 # index in the all messages list
-    for i in range(0, 20 * len(msgs), 20):
-        email_obj = Email(msgs[count])
-        t = get_score(email_obj)
-        email_obj.importance = t
-        text = msgs[count].subject
-        if len(text) > 65:
-            t += text[0:65] + "..."
-        else:
-            t += text
-        EmailUI(email_scroll, t, email_obj, i) # UI: parent, t = importance, object, i = position
-        count += 1
-        # if count <= len(msgs) - 2:
-        #     count += 1
+    if (len(currently_open) == 0):
 
+        email_scroll.pack()
+        email_scroll.place(relx=0.27, rely=0.1)
+        currently_open.append(email_scroll)
         
-    print("printed email list")
+        count = 0 # index in the all messages list
+        for i in range(0, 20 * len(msgs), 20):
+            email_obj = Email(msgs[count])
+            t = get_score(email_obj)
+            email_obj.importance = t
+            text = msgs[count].subject
+            if len(text) > 65:
+                t += text[0:65] + "..."
+            else:
+                t += text
+            EmailUI(email_scroll, t, email_obj, i) # UI: parent, t = importance, object, i = position
+            count += 1
+            # if count <= len(msgs) - 2:
+            #     count += 1
 
+            
+        print("printed email list")
+
+
+temp_hidden = []
 def reopen_emails():
-
+    print("REOPEN_EMAILS()")
+    
     # close the currently open email by resetting body to empty text
-    # also remove the view button
+    # also remove the buttons (by placing them off screen) and the to do frame as well
     n.configure(text="")
     root.update_idletasks()
 
-    print("reopening email list")
-    print(currently_open)
+    todo_frame.delete(1.0, ctk.END)
+    todo_frame.place(relx=-100, rely=-100)
+    todobtn.place(relx=-100, rely=-100)
+    viewbtn.place(relx=-100, rely=-100)
+
     
 
-    print('closing')
+
+
+    
+
+    print('-----Showing what is currently open and will be closed:')
+    count = 0
+    
     for x in currently_open:
-        print("closing" + str(x))
+        print(str(count) + ": " + str(x))
         x.place_forget()
         currently_open.remove(x)
-    print(len(currently_open))
-    print(currently_open)
 
 
     # reopen the email list
+    print('-----Showing what is currently CLOSED and will be opened: ')
+    count = 0
     for x in currently_hidden:
+        print(str(count) + ": " + str(x))
         x.pack()
         x.place(relx=0.27, rely=0.1)
         currently_hidden.remove(x)
+    
+    #place what you just closed into currently hidden
+    # currently_hidden = temp_hidden.copy()
 
 
 
