@@ -3,9 +3,11 @@
 import spacy
 
 # Load English tokenizer, tagger, parser and NER
-nlp = spacy.load("en_core_web_sm")
+# nlp = spacy.load("en_core_web_sm")
+nlp = spacy.load(r'C:\Users\abhis\AppData\Roaming\Python\Python311\site-packages\en_core_web_sm\en_core_web_sm-3.7.1')
 
 
+print(nlp.path)
 class Email:
     importance = ""
     sender = ""
