@@ -13,6 +13,7 @@ class Email:
     classified = False
     body = ""
     id = ""
+    date = ""
 
 
     email_sender_length = 0
@@ -35,6 +36,7 @@ class Email:
         self.body = msg.plain
         self.id = msg.id
         self.mark_read_function = msg.mark_as_read
+        self.date = msg.date
         if msg.plain:
             self.body_length = len(msg.plain)
 

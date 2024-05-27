@@ -15,7 +15,6 @@ from gemini import display_ai_summary
 
 
 # initialization
-gmail = Gmail()
 
 print("initializing UI")
 
@@ -40,13 +39,13 @@ email_scroll = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
 email_text_frame = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
 
 title_frame = ctk.CTkLabel(master=email_text_frame, text="Dummy text", font=('Calibri', 25, 'bold'), wraplength=550, pady=5)
-n = ctk.CTkLabel(master=email_text_frame, text="", font=('Calibri', 16), wraplength=550, pady=10) # email body
+n = ctk.CTkLabel(master=email_text_frame, text="", font=('Helvetica', 17), wraplength=550, pady=10) # email body
 sender_frame = ctk.CTkLabel(master=email_text_frame, text="Dummy text", font=('Calibri', 18, "italic"), wraplength=550)
 
-viewbtn = ctk.CTkButton(master=email_text_frame, text="View")
-todobtn = ctk.CTkButton(master=email_text_frame, text="Generate To-Do")
+viewbtn = ctk.CTkButton(master=email_text_frame, text="View", font=('Verdana', 20))
+todobtn = ctk.CTkButton(master=email_text_frame, text="Generate To-Do", font=('Verdana', 20))
 
-todo_frame = ctk.CTkTextbox(master=n, width=300, height=200)
+todo_frame = ctk.CTkTextbox(master=n, width=350, height=200, font=('Verdana', 20))
 
 
 
@@ -63,7 +62,7 @@ class EmailUI:
         master.label = previewframe
 
         # preview email button
-        previewframe.label = ctk.CTkButton(master=previewframe, text= email_text, command= lambda: display_email(email_obj), width=500, height=30, fg_color='#5A5A5A', hover_color='#2FA572')
+        previewframe.label = ctk.CTkButton(master=previewframe, text= email_text, font=('Verdana', 13), command= lambda: display_email(email_obj), width=500, height=30, fg_color='#5A5A5A', hover_color='#2FA572')
         previewframe.label.grid(row=row_index, column=0, padx=5, pady=0)
 
         # mark as read button
@@ -79,7 +78,8 @@ def mark_read(email_obj, button):
     button.configure(fg_color="grey", state="disabled")
 
 
-
+def check_if_empty():
+    print('hi')
 
 def display_email(email):
     
@@ -112,7 +112,7 @@ def display_email(email):
     title_frame.update_idletasks()
     
     sender_frame.pack()
-    sender_frame.configure(text=email.sender)
+    sender_frame.configure(text=(email.sender + "    |    " +  email.date))
     sender_frame.update_idletasks()
     
     # Gemini AI's response which is streamed
@@ -142,9 +142,20 @@ def display_email(email):
 
 
 
-def show_emails(msgs):
+def show_emails():
+    gmail = Gmail()
+    query_params = {
+        "newer_than": (1, "day"),
+        "unread": True,
+    }
+    print("getting emails from gmail API")
+    msgs = gmail.get_messages(query=construct_query(query_params))
+    print('len of msgs: ' + str(len(msgs)))
+
+    print(msgs)
     print("showing email list")
     if (len(currently_open) == 0):
+        button.configure(text='Reload')
 
         email_scroll.pack()
         email_scroll.place(relx=0.27, rely=0.1)
@@ -160,7 +171,8 @@ def show_emails(msgs):
                 t += text[0:65] + "..."
             else:
                 t += text
-            EmailUI(email_scroll, t, email_obj, i) # UI: parent, t = importance, object, i = position
+            EmailUI(email_scroll, t, email_obj, i) # UI: parent, t = imprtance, object, i = position
+            print("Displaying : " + email_obj.subject)
             count += 1
             # if count <= len(msgs) - 2:
             #     count += 1
@@ -169,7 +181,7 @@ def show_emails(msgs):
         print("printed email list")
 
 
-temp_hidden = []
+
 def reopen_emails():
     print("REOPEN_EMAILS()")
     
@@ -213,12 +225,12 @@ def reopen_emails():
 
 
 # grabbing recent unread emails to display
-query_params = {
-    "newer_than": (1, "day"),
-    "unread": True,
-}
-print("getting emails from gmail API")
-messages = gmail.get_messages(query=construct_query(query_params))
+# query_params = {
+#     "newer_than": (1, "day"),
+#     "unread": True,
+# }
+# print("getting emails from gmail API")
+# messages = gmail.get_messages(query=construct_query(query_params))
 
 
 
@@ -230,11 +242,11 @@ label = ctk.CTkLabel(master=frame, text="Demo version", font=('Verdana', 20))
 label.pack(pady=12, padx=10)
 label.place(relx=0.05, rely=0.1)
 
-button = ctk.CTkButton(master=frame, text="Open", command= lambda: show_emails(messages))
+button = ctk.CTkButton(master=frame, text="Open", font=('Verdana', 20), command= lambda: show_emails())
 button.pack(pady=12, padx=10)
 button.place(relx=0.05, rely=0.2)
 
-backbtn = ctk.CTkButton(master=frame, text="Back", command= lambda: reopen_emails())
+backbtn = ctk.CTkButton(master=frame, text="Back", font=('Verdana', 20), command= lambda: reopen_emails())
 backbtn.pack(pady=12, padx=10)
 backbtn.place(relx=0.05, rely=0.3)
 
