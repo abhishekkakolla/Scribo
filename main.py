@@ -27,6 +27,7 @@ root = ctk.CTk()
 root.geometry("800x500")
 root.title("scribo")
 root.resizable(False, False)
+root.iconbitmap('scribo.ico')
 
 currently_open = []
 currently_hidden = []
@@ -126,14 +127,7 @@ def display_email(email):
     # currently_open.append(todobtn)
 
    
-   
-    
-    # currently_open.append(email_text_frame)
-
-    # print("-----Showing what is open now: ")
-    # count = 0
-    # for x in currently_open:
-    #     print(str(count) + ": " + str(x))
+  
 
     
         
@@ -219,20 +213,6 @@ def reopen_emails():
         x.place(relx=0.27, rely=0.1)
         currently_hidden.remove(x)
     
-    #place what you just closed into currently hidden
-    # currently_hidden = temp_hidden.copy()
-
-
-
-# grabbing recent unread emails to display
-# query_params = {
-#     "newer_than": (1, "day"),
-#     "unread": True,
-# }
-# print("getting emails from gmail API")
-# messages = gmail.get_messages(query=construct_query(query_params))
-
-
 
 
 
