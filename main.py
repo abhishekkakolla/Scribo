@@ -8,6 +8,7 @@ from email_class import Email
 from simplegmail.query import construct_query
 import customtkinter as ctk
 from tkinter.constants import*
+from darkmode import get_current_mode, set_mode
 
 from gemini import display_ai_summary
 
@@ -17,29 +18,24 @@ from gemini import display_ai_summary
 
 # print("initializing UI")
 
+
 root = ctk.CTk()
 def dark_mode(swap=True):
-    file = open("data\\dark.txt", "r+")
-    text = file.read()
+    # file = open("./data/dark.npy", "r+")
+    text = get_current_mode()
     if (swap == True):
         if (text == "dark"):
             text = "light"
         else:
             text = "dark"
     if (text == "dark"):
-        file.seek(0)
         ctk.set_appearance_mode("light")
         root.iconbitmap('scribo.ico')
-        file.truncate()
-        file.write("light")
-        file.close()
+        set_mode('light')
     elif (text == "light"):
-        file.seek(0)
-        file.truncate()
         ctk.set_appearance_mode("dark")
         root.iconbitmap('scribo-white.ico')
-        file.write("dark")
-        file.close()
+        set_mode('dark')
     else:
         raise Exception("Error reading dark mode file")
 
