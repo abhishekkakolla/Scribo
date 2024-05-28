@@ -137,6 +137,7 @@ def display_email(email):
 
 
 def show_emails():
+    print("SHOW_EMAILS()")
     gmail = Gmail()
     query_params = {
         "newer_than": (1, "day"),
@@ -146,27 +147,41 @@ def show_emails():
     msgs = gmail.get_messages(query=construct_query(query_params))
     print('len of msgs: ' + str(len(msgs)))
 
-    print(msgs)
-    print("showing email list")
-    if (len(currently_open) == 0):
+    # print(msgs)
+    # print("showing email list")
+    print('len of currently open is ' + str(len(currently_open)))
+    # if (len(currently_open) == 0):      
+    if True:  
         button.configure(text='Reload')
+
+        for child in email_scroll.winfo_children():
+            child.destroy()
+
+        # if email_scroll.winfo_ismapped():
+            # email_scroll.destroy()
+            # email_scroll.place_forget()
+            # print('hi')
+        # email_scroll = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
 
         email_scroll.pack()
         email_scroll.place(relx=0.27, rely=0.1)
         currently_open.append(email_scroll)
+
+        
         
         count = 0 # index in the all messages list
+        print("IN FOR LOOP GOING TO DISPLAY:")
         for i in range(0, 20 * len(msgs), 20):
             email_obj = Email(msgs[count])
             t = get_score(email_obj)
-            email_obj.importance = t
+            email_obj.importance = t    
             text = msgs[count].subject
+            print("0: " + text)
             if len(text) > 65:
                 t += text[0:65] + "..."
             else:
                 t += text
             EmailUI(email_scroll, t, email_obj, i) # UI: parent, t = imprtance, object, i = position
-            print("Displaying : " + email_obj.subject)
             count += 1
             # if count <= len(msgs) - 2:
             #     count += 1
@@ -177,6 +192,7 @@ def show_emails():
 
 
 def reopen_emails():
+    
     print("REOPEN_EMAILS()")
     
     # close the currently open email by resetting body to empty text
@@ -200,6 +216,7 @@ def reopen_emails():
     
     for x in currently_open:
         print(str(count) + ": " + str(x))
+        x.update_idletasks()
         x.place_forget()
         currently_open.remove(x)
 
@@ -218,7 +235,7 @@ def reopen_emails():
 
 frame.pack(fill="both", expand=True)
 
-label = ctk.CTkLabel(master=frame, text="Demo version", font=('Verdana', 20))
+label = ctk.CTkLabel(master=frame, text="Scribo", font=('Helvetica', 35, 'bold'))
 label.pack(pady=12, padx=10)
 label.place(relx=0.05, rely=0.1)
 
