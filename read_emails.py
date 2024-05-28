@@ -15,7 +15,7 @@ training_data = []
 
 # grabbing all emails that fit these parameters
 query_params = {
-    "newer_than": (3, "day"),
+    "newer_than": (30, "day"),
 }
 messages = gmail.get_messages(query=construct_query(query_params))
 # creating Email objects and adding to training data
