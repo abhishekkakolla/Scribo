@@ -1,6 +1,6 @@
 # UI file
 
-print("importing libraries")
+# print("importing libraries")
 
 import time
 from simplegmail import Gmail
@@ -16,11 +16,36 @@ from gemini import display_ai_summary
 
 # initialization
 
-print("initializing UI")
+# print("initializing UI")
+
+def dark_mode(swap=True):
+    file = open("data\\dark.txt", "r+")
+    text = file.read()
+    if (swap == True):
+        if (text == "dark"):
+            text = "light"
+        else:
+            text = "dark"
+    if (text == "dark"):
+        file.seek(0)
+        ctk.set_appearance_mode("light")
+        file.truncate()
+        file.write("light")
+        file.close()
+    elif (text == "light"):
+        file.seek(0)
+        file.truncate()
+        ctk.set_appearance_mode("dark")
+        file.write("dark")
+        file.close()
+    else:
+        raise Exception("Error reading dark mode file")
+
+        
 
 
 # UI
-ctk.set_appearance_mode("light")
+dark_mode()
 ctk.set_default_color_theme("green")
 
 root = ctk.CTk()
@@ -74,25 +99,23 @@ class EmailUI:
         
 
 def mark_read(email_obj, button):
-    print("marking as read: " + str (email_obj.subject))
+    # print("marking as read: " + str (email_obj.subject))
     email_obj.mark_read_function()
     button.configure(fg_color="grey", state="disabled")
 
 
-def check_if_empty():
-    print('hi')
 
 def display_email(email):
     
 
-    print("DISPLAY_EMAIL()")
+    # print("DISPLAY_EMAIL()")
 
     # close currently opened components
     
-    print("-----Showing what is open: ")
+    # print("-----Showing what is open: ")
     count = 0
     for x in currently_open:
-        print(str(count) + ": " + str(x))
+        # print(str(count) + ": " + str(x))
         
         x.place_forget()
         x.update_idletasks()
@@ -137,19 +160,19 @@ def display_email(email):
 
 
 def show_emails():
-    print("SHOW_EMAILS()")
+    # print("SHOW_EMAILS()")
     gmail = Gmail()
     query_params = {
         "newer_than": (1, "day"),
         "unread": True,
     }
-    print("getting emails from gmail API")
+    # print("getting emails from gmail API")
     msgs = gmail.get_messages(query=construct_query(query_params))
-    print('len of msgs: ' + str(len(msgs)))
+    # print('len of msgs: ' + str(len(msgs)))
 
     # print(msgs)
     # print("showing email list")
-    print('len of currently open is ' + str(len(currently_open)))
+    # print('len of currently open is ' + str(len(currently_open)))
     # if (len(currently_open) == 0):      
     if True:  
         button.configure(text='Reload')
@@ -170,13 +193,13 @@ def show_emails():
         
         
         count = 0 # index in the all messages list
-        print("IN FOR LOOP GOING TO DISPLAY:")
+        # print("IN FOR LOOP GOING TO DISPLAY:")
         for i in range(0, 20 * len(msgs), 20):
             email_obj = Email(msgs[count])
             t = get_score(email_obj)
             email_obj.importance = t    
             text = msgs[count].subject
-            print("0: " + text)
+            # print("0: " + text)
             if len(text) > 65:
                 t += text[0:65] + "..."
             else:
@@ -187,13 +210,13 @@ def show_emails():
             #     count += 1
 
             
-        print("printed email list")
+        # print("printed email list")
 
 
 
 def reopen_emails():
     
-    print("REOPEN_EMAILS()")
+    # print("REOPEN_EMAILS()")
     
     # close the currently open email by resetting body to empty text
     # also remove the buttons (by placing them off screen) and the to do frame as well
@@ -211,25 +234,24 @@ def reopen_emails():
 
     
 
-    print('-----Showing what is currently open and will be closed:')
+    # print('-----Showing what is currently open and will be closed:')
     count = 0
     
     for x in currently_open:
-        print(str(count) + ": " + str(x))
+        # print(str(count) + ": " + str(x))
         x.update_idletasks()
         x.place_forget()
         currently_open.remove(x)
 
 
     # reopen the email list
-    print('-----Showing what is currently CLOSED and will be opened: ')
+    # print('-----Showing what is currently CLOSED and will be opened: ')
     count = 0
     for x in currently_hidden:
-        print(str(count) + ": " + str(x))
+        # print(str(count) + ": " + str(x))
         x.pack()
         x.place(relx=0.27, rely=0.1)
         currently_hidden.remove(x)
-    
 
 
 
@@ -246,6 +268,10 @@ button.place(relx=0.05, rely=0.2)
 backbtn = ctk.CTkButton(master=frame, text="Back", font=('Verdana', 20), command= lambda: reopen_emails())
 backbtn.pack(pady=12, padx=10)
 backbtn.place(relx=0.05, rely=0.3)
+
+darkbtn = ctk.CTkButton(master=frame, width=30, height=30, text="🌔",  hover_color='#000000', command = lambda : dark_mode(False))
+darkbtn.pack(pady=5, padx=5)
+darkbtn.place(relx=0.05, rely=0.4)
 
 
 
