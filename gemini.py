@@ -107,10 +107,10 @@ def display_ai_summary(email, ctk_label, viewbtn, todobtn, todo_frame, currently
   # currently_open.append(viewbtn)
   # currently_open.append(todobtn)
 
-  print("-----Showing what is open now: ")
+  # print("-----Showing what is open now: ")
   count = 0
-  for x in currently_open:
-    print(str(count) + ": " + str(x))
+  # for x in currently_open:
+  #   print(str(count) + ": " + str(x))
 
 
 # Gemini to-do
@@ -158,7 +158,7 @@ def show_todobtn(email, todobtn, todo_frame, currently_open):
 
 
 def view_email_browser(email):
-  print("viewing in browser")
+  # print("viewing in browser")
   message_id = email.id
   email_url = f"https://mail.google.com/mail/u/0/#inbox/{message_id}"
   import webbrowser
