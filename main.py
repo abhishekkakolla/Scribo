@@ -149,7 +149,7 @@ def show_emails():
     # print("SHOW_EMAILS()")
     gmail = Gmail()
     query_params = {
-        "newer_than": (1, "day"),
+        "newer_than": (3, "day"),
         "unread": True,
     }
     # print("getting emails from gmail API")
