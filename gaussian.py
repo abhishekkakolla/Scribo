@@ -2,7 +2,6 @@
 
 import numpy as np
 import math
-import scipy
 from scipy.stats import norm
 import matplotlib.pyplot as plt
 
