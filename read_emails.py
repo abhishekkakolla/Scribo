@@ -32,10 +32,7 @@ for x in training_data:
     print("num-verbs: " + str(x.num_verbs))
     print(" ")
 
-# # writing data to file
-# with open("data\\email_data.txt", "a", encoding="utf-8") as doc:
-#     for msg in messages:
-#         if msg.plain:
+
             
             
 training_data_arr = numpy.array(training_data)            

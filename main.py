@@ -2,7 +2,6 @@
 
 # print("importing libraries")
 
-import time
 from simplegmail import Gmail
 from gaussian import get_score
 from email_class import Email
@@ -18,6 +17,7 @@ from gemini import display_ai_summary
 
 # print("initializing UI")
 
+root = ctk.CTk()
 def dark_mode(swap=True):
     file = open("data\\dark.txt", "r+")
     text = file.read()
@@ -29,6 +29,7 @@ def dark_mode(swap=True):
     if (text == "dark"):
         file.seek(0)
         ctk.set_appearance_mode("light")
+        root.iconbitmap('scribo.ico')
         file.truncate()
         file.write("light")
         file.close()
@@ -36,6 +37,7 @@ def dark_mode(swap=True):
         file.seek(0)
         file.truncate()
         ctk.set_appearance_mode("dark")
+        root.iconbitmap('scribo-white.ico')
         file.write("dark")
         file.close()
     else:
@@ -48,11 +50,9 @@ def dark_mode(swap=True):
 dark_mode()
 ctk.set_default_color_theme("green")
 
-root = ctk.CTk()
 root.geometry("800x500")
 root.title("scribo")
 root.resizable(False, False)
-root.iconbitmap('scribo.ico')
 
 currently_open = []
 currently_hidden = []
@@ -146,18 +146,8 @@ def display_email(email):
     root.after(1000, lambda : display_ai_summary(email, n, viewbtn, todobtn, todo_frame, currently_open, email_text_frame))
 
     currently_open.append(email_text_frame)
-    # currently_open.append(viewbtn)
-    # currently_open.append(todobtn)
 
    
-  
-
-    
-        
-    
-
-
-
 
 def show_emails():
     # print("SHOW_EMAILS()")
@@ -231,9 +221,6 @@ def reopen_emails():
     
 
 
-
-    
-
     # print('-----Showing what is currently open and will be closed:')
     count = 0
     
@@ -272,12 +259,5 @@ backbtn.place(relx=0.05, rely=0.3)
 darkbtn = ctk.CTkButton(master=frame, width=30, height=30, text="🌔",  hover_color='#000000', command = lambda : dark_mode(False))
 darkbtn.pack(pady=5, padx=5)
 darkbtn.place(relx=0.05, rely=0.4)
-
-
-
-
-
-
-
 
 root.mainloop()

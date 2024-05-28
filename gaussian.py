@@ -62,7 +62,7 @@ def get_score(email_obj):
 
     u_score = 0
     u_score = math.log(1 - prior_probability)
-    # print("u scoer beginning: " + str(u_score))
+    # print("u score beginning: " + str(u_score))
 
     for col in range(0, 6):
         l = norm.pdf(properties[col], loc=unimportant_data_array[0][col], scale=unimportant_data_array[1][col])
@@ -74,7 +74,7 @@ def get_score(email_obj):
         l = math.log(l)
         # print("value is " + str(properties[col]) + ", avg is " + str(unimportant_data_array[0][col]) + "std is " + str(unimportant_data_array[1][col]) + "ans with log is " + str(l))
         u_score += l
-        # print("u scoer: " + str(u_score))
+        # print("u score: " + str(u_score))
 
     # print ("----------important score: " + str(score))
     # print ("----------unimportant score: " + str(u_score))

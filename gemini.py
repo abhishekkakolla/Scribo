@@ -102,10 +102,7 @@ def display_ai_summary(email, ctk_label, viewbtn, todobtn, todo_frame, currently
   show_viewbtn(email, viewbtn)
   show_todobtn(email, todobtn, todo_frame, currently_open)
 
-  # only after the function has run append the components that have been added
-  # currently_open.append(email_text_frame)
-  # currently_open.append(viewbtn)
-  # currently_open.append(todobtn)
+ 
 
   # print("-----Showing what is open now: ")
   count = 0
