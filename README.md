@@ -5,3 +5,4 @@ Summaries and a to-do can be generated for each email (GeminiAI) to copy and pas
 Eliminate the clutter in your email and make email-viewing streamlined.
 
 ![image](https://github.com/abhishekkakolla/Scribo/assets/70043537/4cd5975e-6563-469d-b7ea-d2348df9b4bd)
+![image](https://github.com/abhishekkakolla/Scribo/assets/70043537/7de345ba-87ac-4a5e-9dea-e51836e58423)
