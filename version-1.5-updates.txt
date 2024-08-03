@@ -3,6 +3,7 @@ Updates
 -- Before Scribo was only compatible on my machine, but now added compatibility with any x86 system
 -- by using %localappdata% to handle packages / scripts that require writing to disk.
 -- Anyone should be able to install the program now
+-- Added speed improvements with lazy imports & removing unused packages
 
 
 How?
