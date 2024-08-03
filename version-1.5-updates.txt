@@ -1,0 +1,11 @@
+Updates
+-- Improved readability of emails by simplifying dates
+-- Before Scribo was only compatible on my machine, but now added compatibility with any x86 system
+-- by using %localappdata% to handle packages / scripts that require writing to disk.
+-- Anyone should be able to install the program now
+
+
+How?
+-- Edited gmail.py file in simplegmail package by jeremyephron to write to %localappdata%
+-- Better parsing of dates 
+-- Removed hard-coded path locations to system-dependent using os package for all users

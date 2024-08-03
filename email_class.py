@@ -1,10 +1,19 @@
 # This is the email class file that includes all of the properties measured in the algorithm.
 
 import spacy
+import os
+# import en_core_web_sm
 
 # Load English tokenizer, tagger, parser and NER
 # nlp = spacy.load("en_core_web_sm")
-nlp = spacy.load(r'C:\Users\abhis\AppData\Roaming\Python\Python311\site-packages\en_core_web_sm\en_core_web_sm-3.7.1')
+# model_path = os.path.join(os.path.expanduser("~"), 'AppData', 'Roaming', 'Python', 'Python312', 'site-packages', 'en_core_web_sm', 'en_core_web_sm-3.7.1')
+# nlp = spacy.load(model_path)
+nlp = spacy.load(r'en_core_web_sm\en_core_web_sm-3.7.1')
+
+# nlp = spacy.load(r'C:\Users\abhis\AppData\Roaming\Python\Python312\site-packages\en_core_web_sm\en_core_web_sm-3.7.1')
+# ^^ hard coded
+# nlp = spacy.load(r'virtual\Lib\site-packages\en_core_web_sm\en_core_web_sm-3.7.1') # doesn't work
+
 
 
 

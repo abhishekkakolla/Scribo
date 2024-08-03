@@ -69,16 +69,20 @@ prompt_parts = [
 # prompts for to-do model
 prompt_parts_todo = [
   "input: The subject, then the body contents of an email, which may include irrelevant information such as links and footer notes.",
-  "output: In around 1-3 bullet points, give a short to-do list on what the user should do based on what the email is saying. Essentially something you can copy and keep for later. Use language that is like a to-do: Don't use language determiners and don't use personal pronouns (like \"you\")",
+  "output: In around 1-3 bullet points, give a short to-do list on what the user should do based on what the email is saying. Make it short so it can be copied and pasted for later. Use language that is like a to-do: Don't use language determiners and don't use personal pronouns (like \"you\"). Also put a '\n\n' between each bullet point.",
   "input: Subject: Your Collision order information\nBody: Hi Abhishek,Thanks for your Collision 2024 ticket order! Here's your order reference number: FLP9FYXN We have attached the invoice for your order. If there is no attachment, don’t worry. You can always access your invoice via the ticket dashboard.To view your ticket details, and find your invoice and ticket reference, click on the ticket dashboard link below. You will use your ticket booking reference to log in to the Collision apps. Please be sure to assign all tickets in your order to someone as soon as possible.VIEW TICKET DASHBOARDAccessibility at CollisionCollision is committed to making our events accessible and welcoming for everyone. To request accessibility support for your time at Collision, please use our accessibility request form.If you have any questions, just hit reply.– Collision teamConnected Intelligence (Canada) Limited, 1055 West Hastings Street, Vancouver BC V6E 2E9, Canada.© 2024 CollisionTerms | Privacy",
-  "output: Here's a to-do list based on the email:\n\n* **View ticket details and invoice:** Access your ticket dashboard at the provided link.\n* **Assign tickets:** Assign all tickets in your order to individuals as soon as possible.\n* **Request accessibility support:** If needed, use the accessibility request form provided in the email.",
+  "output: \n\n* **View ticket details and invoice:** Access your ticket dashboard at the provided link.\n* **Assign tickets:** Assign all tickets in your order to individuals as soon as possible.\n* **Request accessibility support:** If needed, use the accessibility request form provided in the email.",
   "input: Subject: RE: OISS CONTACT FORM \nBody: Hi Abhishek, Thank you for reaching out and your interest in attending Cerritos College! For F-1 international students who wish to apply to attend part-time, please visit https://www.cerritos.edu/international/Concurrent_Enrollment.htm for instructions on the application process and a list of documents to prepare. Please email all files as PDF files to intadmissions@cerritos.edu . Please don’t hesitate to reach out to us if you have any additional questions. With best regards, Jeanora Price, M.A.(Pronouns: She, Her, Hers)International Admission Specialist, Designated School Official (DSO)Office of International Student ServicesEmail: jprice@cerritos.eduPhone: 562-860-2451 ext. 2232Current Students: To schedule an appointment, please use the following link: https://cerritos.campus.eab.com/pal/yTPFevs3FT",
-  "output: Here's a to-do list based on the email:\n\n* **Review part-time enrollment instructions:** Visit the provided link to learn about the application process and required documents.\n* **Email application files:** Send all files as PDFs to intadmissions@cerritos.edu.\n* **Contact for additional questions:** Reach out to Jeanora Price at jprice@cerritos.edu or 562-860-2451 ext. 2232.",
+  "output: \n\n* **Review part-time enrollment instructions:** Visit the provided link to learn about the application process and required documents.\n* **Email application files:** Send all files as PDFs to intadmissions@cerritos.edu.\n* **Contact for additional questions:** Reach out to Jeanora Price at jprice@cerritos.edu or 562-860-2451 ext. 2232.",
   "input: Subject: Package Notification at PKS CSC\nBody: You have received a package at the International Residential College (IRC) CSC. Please come pick it up with a photo ID at your earliest convenience.Tracking number: TBA308464650532Carrier: AmazonYou will receive one email per package we have received for you.IRC Customer Service Center3771 S. McClintock Ave Los Angeles, CA 90089University of Southern CaliforniaOffice: 213.740.1941| mailpks@usc.edu| housing.usc.eduFight On!",
-  "output: Here's a to-do list based on the email:\n\n* **Pick up your package:** Visit the International Residential College (IRC) CSC with a photo ID to retrieve your package.\n* **Tracking number:** Use the provided tracking number TBA308464650532 to monitor your package's status.",
+  "output: \n\n* **Pick up your package:** Visit the International Residential College (IRC) CSC with a photo ID to retrieve your package.\n* **Tracking number:** Use the provided tracking number TBA308464650532 to monitor your package's status.",
+  "input: Subject: Fall 2024 (Sept 16 - Dec 6) batch of the MLH Fellowship Program: Schedule your technical interview!\nBody: Hey, there -- Thanks again for applying to the Fall 2024 (Sept 16 - Dec 6) batch of the MLH Fellowship Program. We'd like to schedule a 10 minute video call in the next few days to perform a technical interview. During this call we'll be walking through the code sample you submitted, discussing how you built it and what you would do differently in the future. We may also ask you some questions about your familiarity with the specific technologies & programming languages you indicated you were proficient with on your application. If time permits, you'll have an opportunity to ask questions at the end of the conversation. Book Interview Use the password blFU651 What we're looking for: Technical Proficiency: Do you have a proficient understanding of the language you used Learning Potential: Do you respond well to feedback and have an aptitude for learning? Communication Skills: Will you be able to successfully collaborate with other fellows? A/V Setup: Do you have a remote environment that will allow you to successfully participate? Professionalism: Did you show up on time and demonstrate a high level of professionalism?",
+  "output: \n\n* **Schedule technical interview.** \n* **Prepare for interview.** \n* **Review interview details.**",
   "input: ",
   "output: ",
 ]
+
+
 
 
 
@@ -161,3 +165,24 @@ def view_email_browser(email):
   import webbrowser
   webbrowser.open(email_url)
 
+
+# take in email date and convert into easier to read format
+def get_sender_details(sender, date):
+  from datetime import datetime
+  # print("sender: " + sender)
+  # print("date: " + date)
+  months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+  time_24hr = date[11:16]
+  time_obj = datetime.strptime(time_24hr, "%H:%M")
+  time_12hr = time_obj.strftime("%I:%M %p")
+
+  if (sender.find('<') == -1):
+    simplified_sender = sender
+  else:
+    simplified_sender = sender[0:sender.index('<')] + "(" + sender[sender.index('<')+1:-1] + ")"
+  simplified_date = months[int(date[5:7])-1] + " " + (date[8:10]) + " " + time_12hr
+  # print(simplified_date)
+  text = simplified_sender + "\n" + simplified_date + "\n"
+
+  return text

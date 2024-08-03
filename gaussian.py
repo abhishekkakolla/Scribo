@@ -3,7 +3,7 @@
 import numpy as np
 import math
 from scipy.stats import norm
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 #ignore NaN warnings
 np.seterr(divide='ignore', invalid='ignore')
