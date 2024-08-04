@@ -13,7 +13,6 @@ from tkinter.constants import*
 
 
 
-
 # initialization
 
 # print("initializing UI")
@@ -265,6 +264,30 @@ darkbtn.pack(pady=5, padx=5)
 darkbtn.place(relx=0.05, rely=0.4)
 
 
+
+
+# every 20 minutes, reload inbox
+import threading
+import time 
+def auto_reload_inbox():
+    count = 0
+    while root.app_running:
+        time.sleep(1)
+        print(str(count))
+        count += 1
+
+        if (count == 1200):
+            print("Auto Reloading inbox")
+            count = 0
+            root.after(2000, show_emails)
+            
+        
+    
+
+def start_auto_reload_inbox():
+    thread = threading.Thread(target=auto_reload_inbox)
+    thread.start()
+
+
+start_auto_reload_inbox()
 root.mainloop()
-
-
