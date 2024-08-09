@@ -4,6 +4,7 @@
 
 
 
+import gc
 from simplegmail import Gmail
 import customtkinter as ctk
 
@@ -52,6 +53,7 @@ root.resizable(False, False)
 
 currently_open = []
 currently_hidden = []
+email_objects_collection = [] # store email objects for deletion later (prevent memory leak)
 
 from email_class import Email
 
@@ -147,7 +149,16 @@ def display_email(email):
 
     currently_open.append(email_text_frame)
 
-   
+
+def show_all_open():
+    for child in currently_open:
+        print(child)
+    print("number of email objects created: " + str(len(email_objects_collection)))
+    print('showing the list of email objs now')
+    for x in email_objects_collection:
+        print(x)
+
+
 
 def show_emails():
     from gaussian import get_score
@@ -159,51 +170,64 @@ def show_emails():
         "unread": True,
     }
     # print("getting emails from gmail API")
-    msgs = gmail.get_messages(query=construct_query(query_params))
+    try:
+        msgs = gmail.get_messages(query=construct_query(query_params))
+    except Exception as e:
+        print('Error fetching gmail messages. ' + str(e))
+        return
     # print('len of msgs: ' + str(len(msgs)))
 
     # print(msgs)
     # print("showing email list")
     # print('len of currently open is ' + str(len(currently_open)))
     # if (len(currently_open) == 0):      
-    if True:  
-        button.configure(text='Reload')
+    
+    button.configure(text='Reload')
 
-        for child in email_scroll.winfo_children():
-            child.destroy()
+    # delete old email objects from memory as well as EmailUI components 
+    for child in email_scroll.winfo_children():
+        child.destroy()
+    for child in email_objects_collection:
+        email_objects_collection.remove(child)
+        del child
+    gc.collect()
 
-        # if email_scroll.winfo_ismapped():
-            # email_scroll.destroy()
-            # email_scroll.place_forget()
-            # print('hi')
-        # email_scroll = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
+    # if email_scroll.winfo_ismapped():
+        # email_scroll.destroy()
+        # email_scroll.place_forget()
+        # print('hi')
+    # email_scroll = ctk.CTkScrollableFrame(master=frame, width=550, height=400)
 
+    show_all_open()
+    
+    if email_scroll not in currently_open:
         email_scroll.pack()
         email_scroll.place(relx=0.27, rely=0.1)
         currently_open.append(email_scroll)
 
-        
-        
-        count = 0 # index in the all messages list
-        # print("IN FOR LOOP GOING TO DISPLAY:")
+    
+    
+    count = 0 # index in the all messages list
+    # print("IN FOR LOOP GOING TO DISPLAY:")
 
-        for i in range(0, 20 * len(msgs), 20):
-            email_obj = Email(msgs[count])
-            t = get_score(email_obj)
-            email_obj.importance = t    
-            text = msgs[count].subject
-            # print("0: " + text)
-            if len(text) > 65:
-                t += text[0:65] + "..."
-            else:
-                t += text
-            EmailUI(email_scroll, t, email_obj, i) # UI: parent, t = imprtance, object, i = position
-            count += 1
-            # if count <= len(msgs) - 2:
-            #     count += 1
+    for i in range(0, 20 * len(msgs), 20):
+        email_obj = Email(msgs[count])
+        email_objects_collection.append(email_obj)
+        t = get_score(email_obj)
+        email_obj.importance = t    
+        text = msgs[count].subject
+        # print("0: " + text)
+        if len(text) > 65:
+            t += text[0:65] + "..."
+        else:
+            t += text
+        EmailUI(email_scroll, t, email_obj, i) # UI: parent, t = imprtance, object, i = position
+        count += 1
+        # if count <= len(msgs) - 2:
+        #     count += 1
 
-            
-        # print("printed email list")
+        
+    # print("printed email list")
 
 
 
@@ -267,26 +291,40 @@ darkbtn.place(relx=0.05, rely=0.4)
 
 
 # every 20 minutes, reload inbox
-import threading
+# import threading
 import time 
+reload_times = 0
 def auto_reload_inbox():
-    count = 0
-    while root.app_running:
-        time.sleep(1)
-        print(str(count))
-        count += 1
+    global reload_times
+    # count = 0
+    # total_reloads = 0
+    # while root.app_running:
+    #     time.sleep(1)
+    #     print(str(count))
+    #     count += 1
 
-        if (count == 1200):
-            print("Auto Reloading inbox")
-            count = 0
-            root.after(2000, show_emails)
+    #     if (count == 0):
+    #         print("Auto Reloading inbox")
+    #         count = 0
+    #         total_reloads+=1
+    #         print('total reloads: ' + str(total_reloads))
+    #         root.after(2000, show_emails)
+    root.after(1000, show_emails)
+    print("auto reloading inbox: " + str(reload_times))
+    reload_times+=1
+    root.after(20000, auto_reload_inbox)
+    
             
         
     
 
 def start_auto_reload_inbox():
-    thread = threading.Thread(target=auto_reload_inbox)
-    thread.start()
+    global reload_times
+    # thread = threading.Thread(target=auto_reload_inbox)
+    # thread.start()
+    root.after(20000, auto_reload_inbox)
+    reload_times += 1
+    print("auto reloading inbox: " + str(reload_times))
 
 
 start_auto_reload_inbox()

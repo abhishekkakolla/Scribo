@@ -49,9 +49,13 @@ def get_score(email_obj):
         # print("normal dist value: " + str(l))
         if math.isnan(l): #check if the number is NaN
             continue
-            # l = 0.000000000000001
         # print(l)
-        l = math.log(l)
+        try:
+            l = math.log(l)
+        except ValueError:
+            print("Value Error (out of domain): l is " + str(l))
+            l = 0.00000001
+            print("new l: " + str(l))
         # print("value is " + str(properties[col]) + ", avg is " + str(important_data_array[0][col]) + "std is " + str(important_data_array[1][col]) + "ans with log is " + str(l))
         score += l
 
@@ -68,9 +72,13 @@ def get_score(email_obj):
         # print("norm dist value: " + str(l))
         if math.isnan(l): #check if the number is NaN, aka very very small
             continue
-            # l = 0.000000000000001
         # print(l)
-        l = math.log(l)
+        try:
+            l = math.log(l)
+        except ValueError:
+            print("Value Error (out of domain): l is " + str(l))
+            l = 0.00000001
+            print("new l: " + str(l))
         # print("value is " + str(properties[col]) + ", avg is " + str(unimportant_data_array[0][col]) + "std is " + str(unimportant_data_array[1][col]) + "ans with log is " + str(l))
         u_score += l
         # print("u score: " + str(u_score))
